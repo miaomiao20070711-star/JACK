@@ -371,21 +371,25 @@ const sparkEmojis = ['💖','✨','🌟','💕','🕊️','🌸','💫','🫧','
 
 // ========== Google Sheets 提交 ==========
 // 把下面这个 URL 替换成你部署 Google Apps Script 后得到的地址
-const API_URL = 'https://script.google.com/macros/s/AKfycbynClqBPichmvo6AeX5YzVEpISaR73bNJE1Jroo6nsfHzaFj03P_CSb-6IHGjfn4rpN/exec';
+const API_URL = window.location.hostname.includes('pages.dev')
+  ? '/api/submit'
+  : 'https://script.google.com/macros/s/AKfycbynClqBPichmvo6AeX5YzVEpISaR73bNJE1Jroo6nsfHzaFj03P_CSb-6IHGjfn4rpN/exec';
 
 function getName() {
   return document.getElementById('nameInput').value.trim() || '匿名';
 }
 
 function sendToSheet(type, content) {
-  if (API_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL') return;
   var payload = 'name=' + encodeURIComponent(getName()) + '&type=' + encodeURIComponent(type) + '&content=' + encodeURIComponent(content);
-  fetch(API_URL, {
+  var options = {
     method: 'POST',
-    mode: 'no-cors',
     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
     body: payload
-  }).catch(function() {});
+  };
+  if (API_URL.indexOf('/api/') !== 0) {
+    options.mode = 'no-cors';
+  }
+  fetch(API_URL, options).catch(function() {});
 }
 
 // ---- Background floating particles ----

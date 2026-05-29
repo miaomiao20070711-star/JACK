@@ -83,6 +83,32 @@
     letter-spacing: 0.06em;
   }
 
+  /* ---- name input ---- */
+  .name-section { text-align: center; }
+  .name-input {
+    width: 180px;
+    padding: 10px 16px;
+    border: 2px solid rgba(230,210,200,0.6);
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    color: var(--text);
+    background: rgba(255,255,255,0.5);
+    text-align: center;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  .name-input:focus {
+    border-color: var(--coral);
+    box-shadow: 0 0 0 4px rgba(247,164,164,0.15);
+  }
+  .name-input::placeholder { color: #c4b8b0; }
+  .name-hint {
+    font-size: 0.78rem;
+    color: #b8a89e;
+    margin-top: 6px;
+  }
+
   /* ---- card ---- */
   .card {
     background: var(--card-bg);
@@ -273,6 +299,13 @@
     <p class="sub">你比自己想象中更勇敢、更美好</p>
   </div>
 
+  <!-- Name input -->
+  <div class="card name-section">
+    <p class="worry-label">📝 你的名字（选填）</p>
+    <input class="name-input" id="nameInput" placeholder="留下你的昵称..." maxlength="20">
+    <p class="name-hint">写上名字，好让我知道你来过 💌</p>
+  </div>
+
   <!-- Encouragement Jar -->
   <div class="card jar-section">
     <p class="jar-label">🫙 点一点罐子，收获一份温暖</p>
@@ -336,6 +369,24 @@ const moodResponses = {
 
 const sparkEmojis = ['💖','✨','🌟','💕','🕊️','🌸','💫','🫧','🎀','💝','🌷','🕯️','🍀','💗','🦋'];
 
+// ========== Google Sheets 提交 ==========
+// 把下面这个 URL 替换成你部署 Google Apps Script 后得到的地址
+const API_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL';
+
+function getName() {
+  return document.getElementById('nameInput').value.trim() || '匿名';
+}
+
+function sendToSheet(type, content) {
+  if (API_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL') return;
+  fetch(API_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify({ name: getName(), type: type, content: content })
+  }).catch(() => {});
+}
+
 // ---- Background floating particles ----
 function createParticles() {
   const container = document.getElementById('particles');
@@ -389,6 +440,7 @@ jar.addEventListener('click', (e) => {
 
   const msg = getRandomMsg();
   messageDisplay.innerHTML = `<span class="message-text">${msg}</span>`;
+  sendToSheet('收到鼓励', msg);
 });
 
 // ---- Worry Release ----
@@ -404,6 +456,7 @@ releaseBtn.addEventListener('click', () => {
   const cy = btnRect.top;
   sparkBurst(cx, cy, 16);
 
+  sendToSheet('烦恼', text);
   worryInput.value = '';
   worryInput.placeholder = '看，烦恼飞走了~ 感觉好点了吗？';
   setTimeout(() => {
@@ -431,13 +484,14 @@ moodBtns.forEach(btn => {
     sparkBurst(cx, cy, 8);
 
     moodMessage.innerHTML = `<span class="message-text">${msg}</span>`;
+    sendToSheet('心情', mood);
   });
 });
 
 // ---- Click anywhere for hearts ----
 document.addEventListener('click', (e) => {
   // Don't interfere with interactive elements
-  if (e.target.closest('button, textarea, .jar-emoji, .mood-btn')) return;
+  if (e.target.closest('button, textarea, .jar-emoji, .mood-btn, input')) return;
   sparkBurst(e.clientX, e.clientY, 5);
 });
 

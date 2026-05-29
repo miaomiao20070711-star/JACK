@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>✨ 今天也要加油呀 ✨</title>
+<style>
+  :root {
+    --peach: #f8c4b4;
+    --coral: #f7a4a4;
+    --gold: #f9d371;
+    --lavender: #cdb4db;
+    --sky: #a2d2ff;
+    --mint: #bde0fe;
+    --text: #5c4d44;
+    --text-light: #8b7b72;
+    --card-bg: rgba(255,255,255,0.55);
+    --shadow: 0 8px 32px rgba(149, 117, 105, 0.12);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'PingFang SC', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+    background: linear-gradient(135deg, #fce4d6 0%, #f8edeb 25%, #fde2e4 50%, #e8dff5 75%, #d4e8f0 100%);
+    background-size: 400% 400%;
+    animation: bgShift 20s ease-in-out infinite;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  @keyframes bgShift {
+    0%, 100% { background-position: 0% 50%; }
+    25% { background-position: 100% 0%; }
+    50% { background-position: 100% 100%; }
+    75% { background-position: 0% 100%; }
+  }
+
+  /* ---- floating particles ---- */
+  .particles {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  }
+  .particle {
+    position: absolute;
+    animation: floatUp linear infinite;
+    opacity: 0;
+    font-size: 20px;
+  }
+  @keyframes floatUp {
+    0% { transform: translateY(100vh) scale(0) rotate(0deg); opacity: 0; }
+    10% { opacity: 1; }
+    90% { opacity: 1; }
+    100% { transform: translateY(-10vh) scale(1.2) rotate(360deg); opacity: 0; }
+  }
+
+  /* ---- main container ---- */
+  .container {
+    position: relative; z-index: 1;
+    width: 90vw; max-width: 520px;
+    display: flex; flex-direction: column; gap: 24px;
+    padding: 20px 0 40px;
+  }
+
+  /* ---- title ---- */
+  .title-area {
+    text-align: center;
+  }
+  .title-area h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 0.04em;
+    text-shadow: 0 2px 8px rgba(255,255,255,0.6);
+  }
+  .title-area .sub {
+    margin-top: 6px;
+    font-size: 0.95rem;
+    color: var(--text-light);
+    letter-spacing: 0.06em;
+  }
+
+  /* ---- card ---- */
+  .card {
+    background: var(--card-bg);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 24px;
+    padding: 28px 26px;
+    box-shadow: var(--shadow);
+    border: 1px solid rgba(255,255,255,0.6);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(149, 117, 105, 0.18);
+  }
+
+  /* ---- encouragement jar ---- */
+  .jar-section {
+    text-align: center;
+  }
+  .jar-label {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    margin-bottom: 14px;
+    letter-spacing: 0.05em;
+  }
+  .jar-emoji {
+    font-size: 64px;
+    display: inline-block;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    user-select: none;
+    filter: drop-shadow(0 4px 12px rgba(249, 168, 144, 0.4));
+    animation: jarBounce 2.5s ease-in-out infinite;
+  }
+  .jar-emoji:hover { transform: scale(1.1); }
+  .jar-emoji:active { transform: scale(0.95); }
+  @keyframes jarBounce {
+    0%, 100% { transform: translateY(0); }
+    30% { transform: translateY(-8px); }
+    50% { transform: translateY(0); }
+    70% { transform: translateY(-4px); }
+  }
+  .message-display {
+    margin-top: 16px;
+    min-height: 48px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .message-text {
+    font-size: 1.15rem;
+    color: var(--text);
+    font-weight: 500;
+    line-height: 1.7;
+    padding: 12px 20px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.7), rgba(255,240,230,0.7));
+    border-radius: 16px;
+    animation: msgIn 0.5s ease-out;
+  }
+  @keyframes msgIn {
+    0% { opacity: 0; transform: translateY(10px) scale(0.95); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* ---- worry release ---- */
+  .worry-label {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    margin-bottom: 10px;
+    letter-spacing: 0.05em;
+  }
+  .worry-input {
+    width: 100%;
+    min-height: 70px;
+    padding: 14px 16px;
+    border: 2px solid rgba(230,210,200,0.6);
+    border-radius: 16px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    color: var(--text);
+    background: rgba(255,255,255,0.5);
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  }
+  .worry-input:focus {
+    border-color: var(--coral);
+    box-shadow: 0 0 0 4px rgba(247,164,164,0.15);
+  }
+  .worry-input::placeholder {
+    color: #c4b8b0;
+  }
+  .release-btn {
+    margin-top: 12px;
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 24px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    color: #fff;
+    background: linear-gradient(135deg, #f7a4a4, #f8c4b4);
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 16px rgba(247,164,164,0.35);
+    letter-spacing: 0.04em;
+  }
+  .release-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 22px rgba(247,164,164,0.5);
+  }
+  .release-btn:active { transform: scale(0.97); }
+  .dissolve-overlay {
+    position: relative;
+    display: inline-block;
+  }
+
+  /* ---- mood buttons ---- */
+  .mood-row {
+    display: flex; flex-wrap: wrap; gap: 10px;
+    justify-content: center;
+  }
+  .mood-btn {
+    width: 50px; height: 50px;
+    border-radius: 50%;
+    border: 2px solid rgba(230,210,200,0.5);
+    background: rgba(255,255,255,0.45);
+    font-size: 24px;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .mood-btn:hover {
+    transform: scale(1.15);
+    border-color: var(--coral);
+    box-shadow: 0 4px 16px rgba(247,164,164,0.3);
+    background: rgba(255,255,255,0.7);
+  }
+  .mood-btn.active {
+    animation: moodPop 0.5s ease-out;
+    border-color: var(--coral);
+    background: rgba(255,240,235,0.8);
+  }
+  @keyframes moodPop {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.35); }
+    100% { transform: scale(1); }
+  }
+
+  /* ---- spark burst (generated by JS) ---- */
+  .spark {
+    position: fixed;
+    pointer-events: none;
+    z-index: 999;
+    font-size: 22px;
+    animation: sparkFly 1s ease-out forwards;
+  }
+  @keyframes sparkFly {
+    0% { opacity: 1; transform: translate(0,0) scale(1); }
+    100% { opacity: 0; transform: translate(var(--dx), var(--dy)) scale(0); }
+  }
+
+  /* ---- footer ---- */
+  .footer {
+    text-align: center;
+    font-size: 0.78rem;
+    color: #b8a89e;
+    letter-spacing: 0.05em;
+  }
+
+  /* ---- responsive ---- */
+  @media (max-width: 480px) {
+    .title-area h1 { font-size: 1.5rem; }
+    .card { padding: 20px 16px; }
+    .jar-emoji { font-size: 52px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- floating background particles -->
+<div class="particles" id="particles"></div>
+
+<div class="container">
+
+  <!-- Title -->
+  <div class="title-area">
+    <h1>🌟 今天也要加油呀</h1>
+    <p class="sub">你比自己想象中更勇敢、更美好</p>
+  </div>
+
+  <!-- Encouragement Jar -->
+  <div class="card jar-section">
+    <p class="jar-label">🫙 点一点罐子，收获一份温暖</p>
+    <div class="jar-emoji" id="jar" title="点我！">🫙</div>
+    <div class="message-display" id="messageDisplay"></div>
+  </div>
+
+  <!-- Worry Release -->
+  <div class="card">
+    <p class="worry-label">🕊️ 把烦恼写下来，然后让它飞走</p>
+    <textarea class="worry-input" id="worryInput" placeholder="在这里写下你的烦恼..." rows="2"></textarea>
+    <div style="text-align:right">
+      <button class="release-btn" id="releaseBtn">✨ 放飞烦恼</button>
+    </div>
+  </div>
+
+  <!-- Mood Picker -->
+  <div class="card" style="text-align:center">
+    <p class="worry-label">💛 现在的你是什么心情？</p>
+    <div class="mood-row" id="moodRow">
+      <button class="mood-btn" data-mood="开心">😊</button>
+      <button class="mood-btn" data-mood="平静">😌</button>
+      <button class="mood-btn" data-mood="疲惫">😮‍💨</button>
+      <button class="mood-btn" data-mood="焦虑">😰</button>
+      <button class="mood-btn" data-mood="期待">🤩</button>
+    </div>
+    <div class="message-display" id="moodMessage"></div>
+  </div>
+
+  <p class="footer">🌸 无论今天怎样，你都值得被温柔对待</p>
+</div>
+
+<script>
+// ---- Encouragement messages ----
+const messages = [
+  "你已经在发光了，只是你自己还没发现 ✨",
+  "慢慢来，谁不是翻山越岭地去爱自己 🌸",
+  "今天撑过去了，你已经很棒了 💪",
+  "月亮也在大海深处迷茫，但依然每天升起 🌙",
+  "你不是一个人在走这段路，有人在偷偷为你加油 🕯️",
+  "累了就歇一歇，花也有不开的时候 🌷",
+  "你已经做得很好了，我把这句话存在这里，需要的时候来取 💌",
+  "生活有时会下雨，但你是自己的一把伞 ☔",
+  "被安稳地爱着，你值得世间所有美好 💕",
+  "不管你信不信，此刻的你正在变成更好的自己 🌱",
+  "温柔的风会吹走所有不愉快 🍃",
+  "你一定也是某个人翘首以盼的惊喜 🎁",
+  "哪怕今天只有1%的电，也要100%地喜欢自己 🔋",
+  "星星发亮是为了让每一个人有一天都能找到属于自己的星星 ⭐",
+  "请保持热爱，奔赴下一场山海 🏔️",
+];
+
+// ---- Mood responses ----
+const moodResponses = {
+  "开心": ["真好呀！愿这份快乐延续一整天 🎉", "笑容是你最好看的样子，多笑一笑吧 💖", "快乐会传染，谢谢你也在照亮身边的人 ☀️"],
+  "平静": ["平静是内心最好的礼物，享受这一刻 🍵", "心若安定，处处都是好风景 🌿", "这样的状态最好了，不急不躁刚刚好 🧘"],
+  "疲惫": ["辛苦了，抱抱你 🫂 今天就对自己好一点吧", "累了说明你在努力，但也请记得休息 🌙", "你已经承载了很多，允许自己停下来 🛌"],
+  "焦虑": ["没事的，深呼吸——一切都会慢慢好起来的 🌬️", "焦虑是因为你在乎，这本身就是一种温柔 🤲", "别担心明天，今天的你已经足够努力了 🌻"],
+  "期待": ["有期待的日子就是闪闪发光的 ✨", "愿你期待的都能如约而至 🎀", "保持这份期待，它会在前方为你点亮路灯 🏮"],
+};
+
+const sparkEmojis = ['💖','✨','🌟','💕','🕊️','🌸','💫','🫧','🎀','💝','🌷','🕯️','🍀','💗','🦋'];
+
+// ---- Background floating particles ----
+function createParticles() {
+  const container = document.getElementById('particles');
+  const types = ['🌸','💫','✨','🫧','💖','🌷','🍀','🕊️','💕'];
+  for (let i = 0; i < 28; i++) {
+    const el = document.createElement('span');
+    el.className = 'particle';
+    el.textContent = types[Math.floor(Math.random() * types.length)];
+    el.style.left = Math.random() * 100 + '%';
+    el.style.fontSize = (14 + Math.random() * 20) + 'px';
+    el.style.animationDuration = (8 + Math.random() * 16) + 's';
+    el.style.animationDelay = Math.random() * 14 + 's';
+    container.appendChild(el);
+  }
+}
+createParticles();
+
+// ---- Spark burst effect ----
+function sparkBurst(x, y, count = 10) {
+  for (let i = 0; i < count; i++) {
+    const s = document.createElement('span');
+    s.className = 'spark';
+    s.textContent = sparkEmojis[Math.floor(Math.random() * sparkEmojis.length)];
+    s.style.left = x + 'px';
+    s.style.top = y + 'px';
+    s.style.setProperty('--dx', (Math.random() - 0.5) * 160 + 'px');
+    s.style.setProperty('--dy', (Math.random() - 0.5) * 160 - 40 + 'px');
+    document.body.appendChild(s);
+    s.addEventListener('animationend', () => s.remove());
+  }
+}
+
+// ---- Encouragement Jar ----
+const jar = document.getElementById('jar');
+const messageDisplay = document.getElementById('messageDisplay');
+let lastMsgIdx = -1;
+
+function getRandomMsg() {
+  let idx;
+  do { idx = Math.floor(Math.random() * messages.length); }
+  while (idx === lastMsgIdx && messages.length > 1);
+  lastMsgIdx = idx;
+  return messages[idx];
+}
+
+jar.addEventListener('click', (e) => {
+  const rect = jar.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+  sparkBurst(cx, cy, 14);
+
+  const msg = getRandomMsg();
+  messageDisplay.innerHTML = `<span class="message-text">${msg}</span>`;
+});
+
+// ---- Worry Release ----
+const worryInput = document.getElementById('worryInput');
+const releaseBtn = document.getElementById('releaseBtn');
+
+releaseBtn.addEventListener('click', () => {
+  const text = worryInput.value.trim();
+  if (!text) return;
+
+  const btnRect = releaseBtn.getBoundingClientRect();
+  const cx = btnRect.left + btnRect.width / 2;
+  const cy = btnRect.top;
+  sparkBurst(cx, cy, 16);
+
+  worryInput.value = '';
+  worryInput.placeholder = '看，烦恼飞走了~ 感觉好点了吗？';
+  setTimeout(() => {
+    worryInput.placeholder = '在这里写下你的烦恼...';
+  }, 4000);
+});
+
+// ---- Mood Picker ----
+const moodBtns = document.querySelectorAll('.mood-btn');
+const moodMessage = document.getElementById('moodMessage');
+
+moodBtns.forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    // Remove active from all
+    moodBtns.forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const mood = btn.dataset.mood;
+    const responses = moodResponses[mood];
+    const msg = responses[Math.floor(Math.random() * responses.length)];
+
+    const rect = btn.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    sparkBurst(cx, cy, 8);
+
+    moodMessage.innerHTML = `<span class="message-text">${msg}</span>`;
+  });
+});
+
+// ---- Click anywhere for hearts ----
+document.addEventListener('click', (e) => {
+  // Don't interfere with interactive elements
+  if (e.target.closest('button, textarea, .jar-emoji, .mood-btn')) return;
+  sparkBurst(e.clientX, e.clientY, 5);
+});
+
+// ---- First load: show a random message ----
+(function() {
+  messageDisplay.innerHTML = `<span class="message-text">${getRandomMsg()}</span>`;
+})();
+</script>
+</body>
+</html>
